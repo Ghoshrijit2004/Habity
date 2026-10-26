@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Habitly – UI/UX Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;1,800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0e0b;
+            --surface: #171913;
+            --ink: #f1f2ec;
+            --muted: #a5aa9a;
+            --lime: #b8f400;
+            --on-lime: #10130a;
+            --line: #2b2e24;
+            --warn: #ffd24a;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            color-scheme: dark
+        }
+
+        @media (prefers-color-scheme:light) {
+            :root:not([data-theme="dark"]) {
+                --bg: #f6f7f2;
+                --surface: #fff;
+                --ink: #14160f;
+                --muted: #565b4b;
+                --lime: #4d7a00;
+                --on-lime: #fff;
+                --line: #dcdfd0;
+                --warn: #8a5a00;
+                color-scheme: light
+            }
+        }
+
+        :root[data-theme="dark"] {
+            color-scheme: dark
+        }
+
+        html {
+            scroll-padding-top: calc(60px + env(safe-area-inset-top, 0px));
+            scroll-behavior: smooth
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 400 16px/1.65 Inter, system-ui, -apple-system, "Segoe UI", sans-serif
+        }
+
+        a {
+            color: var(--lime)
+        }
+
+        nav {
+            position: sticky;
+            top: env(safe-area-inset-top, 0px);
+            z-index: 5;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            padding: 14px 5vw;
+            background: var(--bg);
+            border-bottom: 1px solid var(--line);
+            overflow-x: auto;
+            white-space: nowrap
+        }
+
+        nav b {
+            font-style: italic;
+            font-weight: 800;
+            color: var(--lime);
+            margin-right: 6px
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px
+        }
+
+        nav a:hover,
+        nav a:focus-visible {
+            color: var(--ink)
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--lime);
+            outline-offset: 3px
+        }
+
+        main,
+        .hero {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 0 5vw
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 40px;
+            align-items: center;
+            padding-top: 72px;
+            padding-bottom: 72px
+        }
+
+        h1 {
+            font: italic 800 clamp(40px, 7vw, 82px)/.98 Inter, sans-serif;
+            letter-spacing: -.03em;
+            margin: 0 0 20px
+        }
+
+        h1 span {
+            color: var(--lime)
+        }
+
+        .sub {
+            font-size: 19px;
+            color: var(--muted);
+            max-width: 34ch;
+            margin: 0 0 26px
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px
+        }
+
+        .meta span {
+            border: 1px solid var(--line);
+            border-radius: 99px;
+            padding: 5px 13px;
+            font-size: 14px;
+            color: var(--muted)
+        }
+
+        .phone {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 34px;
+            padding: 22px 20px;
+            max-width: 300px;
+            justify-self: center;
+            width: 100%
+        }
+
+        .phone p {
+            margin: 0
+        }
+
+        .ring {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: conic-gradient(var(--lime) 66%, var(--line) 0);
+            display: grid;
+            place-items: center;
+            flex: none
+        }
+
+        .ring i {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface);
+            display: grid;
+            place-items: center;
+            font: 600 13px Inter, sans-serif;
+            font-style: normal
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+
+        .habit {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 11px 14px;
+            margin-top: 10px;
+            font-size: 14px
+        }
+
+        .habit small {
+            display: block;
+            color: var(--muted)
+        }
+
+        .tick {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--line)
+        }
+
+        .tick.on {
+            background: var(--lime);
+            border-color: var(--lime)
+        }
+
+        section {
+            padding: 56px 0;
+            border-top: 1px solid var(--line)
+        }
+
+        h2 {
+            font: italic 800 clamp(28px, 4.5vw, 44px)/1.05 Inter, sans-serif;
+            letter-spacing: -.02em;
+            margin: 0 0 8px
+        }
+
+        h3 {
+            font-size: 20px;
+            margin: 36px 0 10px
+        }
+
+        .lead {
+            color: var(--muted);
+            max-width: 62ch;
+            margin: 0 0 24px
+        }
+
+        p,
+        li {
+            max-width: 70ch
+        }
+
+        ul,
+        ol {
+            padding-left: 22px
+        }
+
+        li {
+            margin: 5px 0
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 18px 20px
+        }
+
+        .card h4 {
+            margin: 0 0 6px;
+            font-size: 17px
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 15px
+        }
+
+        .scroll {
+            overflow-x: auto;
+            margin: 14px 0
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 560px;
+            font-size: 15px
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top
+        }
+
+        th {
+            color: var(--lime);
+            font-weight: 600;
+            background: var(--surface)
+        }
+
+        blockquote {
+            margin: 16px 0;
+            padding: 18px 22px;
+            border-left: 4px solid var(--lime);
+            background: var(--surface);
+            border-radius: 0 14px 14px 0;
+            font-size: 19px;
+            max-width: 70ch
+        }
+
+        .fill {
+            background: var(--warn);
+            color: #1a1400;
+            border-radius: 6px;
+            padding: 1px 8px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap
+        }
+
+        .flow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin: 8px 0 18px
+        }
+
+        .flow span {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 7px 12px;
+            font-size: 14px
+        }
+
+        .flow em {
+            color: var(--lime);
+            font-style: normal
+        }
+
+        .sw {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 14px 0
+        }
+
+        .sw div {
+            width: 140px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 13px;
+            background: var(--surface)
+        }
+
+        .sw i {
+            display: block;
+            height: 64px
+        }
+
+        .sw p {
+            margin: 0;
+            padding: 8px 10px;
+            color: var(--muted)
+        }
+
+        .shots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin: 18px 0
+        }
+
+        .shots div {
+            aspect-ratio: 9/16;
+            border: 1px dashed var(--muted);
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+            padding: 8px
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--lime);
+            color: var(--on-lime);
+            font-weight: 600;
+            padding: 11px 20px;
+            border-radius: 99px;
+            text-decoration: none;
+            margin: 4px 8px 4px 0
+        }
+
+        footer {
+            padding: 40px 0 60px;
+            color: var(--muted);
+            font-size: 14px;
+            border-top: 1px solid var(--line)
+        }
+
+        @media (max-width:760px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding-top: 40px
+            }
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+            html {
+                scroll-behavior: auto
+            }
+        }
+
+        .shots {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .shot {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+        }
+
+        .shot img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .shot p {
+            padding: 12px 14px;
+            margin: 0;
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        @media (max-width: 800px) {
+            .shots {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .shots {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav><b>Habitly</b><a href="#overview">Overview</a><a href="#problem">Problem</a><a href="#discover">Research</a><a
+            href="#define">Define</a><a href="#design">Design</a><a href="#test">Testing</a><a
+            href="#results">Results</a></nav>
+
+    <header class="hero">
+        <div>
+            <h1>Build tiny habits that <span>stick.</span></h1>
+            <p class="sub">A mobile habit tracker designed from research to prototype, for people who quit when tracking
+                feels like work.</p>
+            <div class="meta"><span>UI/UX Design Internship</span><span>Mobile app</span><span>Figma and
+                    FigJam</span><span>Rijit Ghosh</span></div>
+        </div>
+        <div class="phone" aria-label="Preview of the Habitly home screen">
+            <p style="font-weight:600">Good morning, Rijit</p>
+            <div class="row" style="margin-top:14px">
+                <div class="ring"><i>66%</i></div>
+                <p style="font-size:14px;color:var(--muted)">2 of 3 habits completed. Keep it up!</p>
+            </div>
+            <div class="habit">
+                <div>Drink Water<small>12 day streak</small></div>
+                <div class="tick on"></div>
+            </div>
+            <div class="habit">
+                <div>Morning Walk<small>5 day streak</small></div>
+                <div class="tick on"></div>
+            </div>
+            <div class="habit">
+                <div>Sleep Schedule<small>On track</small></div>
+                <div class="tick"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="overview">
+            <h2>Overview</h2>
+            <p class="lead">People want healthy habits such as drinking water, sleeping on time, walking and reading,
+                but most quit within weeks. Habitly lets users start with just 1 to 3 tiny habits, check them off in
+                seconds, and see streaks and progress so they stay motivated without pressure.</p>
+            <div class="scroll">
+                <table>
+                    <tr>
+                        <th>Role</th>
+                        <td>UI/UX designer: research, UX, UI, prototyping, testing</td>
+                    </tr>
+                    <tr>
+                        <th>Client</th>
+                        <td>Self-initiated, for the iStudio UI/UX Design Internship</td>
+                    </tr>
+                    <tr>
+                        <th>Industry</th>
+                        <td>Health and wellness</td>
+                    </tr>
+                    <tr>
+                        <th>Challenge</th>
+                        <td>Health and Habits</td>
+                    </tr>
+                    <tr>
+                        <th>Platform</th>
+                        <td>Mobile app (iOS and Android)</td>
+                    </tr>
+                    <tr>
+                        <th>Tools</th>
+                        <td>Figma for design and prototype, FigJam for research, flows and journey map</td>
+                    </tr>
+                </table>
+            </div>
+
+            <p>
+                <a class="btn"
+                    href="https://www.figma.com/design/dcNv466RRdXL0FBO6qK2PP/Habitly?node-id=0-1&t=0H9W9ZTM7S48r4z6-1"
+                    id="figma-link" target="_blank" rel="noopener noreferrer">Open Figma Project</a>
+
+                <a class="btn"
+                    href="https://www.figma.com/proto/dcNv466RRdXL0FBO6qK2PP/Habitly?node-id=0-1&t=0H9W9ZTM7S48r4z6-1"
+                    id="proto-link" target="_blank" rel="noopener noreferrer">Try Interactive Prototype</a>
+            </p>
+
+        </section>
+
+        <section id="problem">
+            <h2>The problem</h2>
+            <p class="lead">Young adults want to build healthy daily habits but lose motivation fast. Many habit apps
+                feel like another chore: too many options, too much setup, and guilt after a missed day.</p>
+            <div class="grid">
+                <div class="card">
+                    <h4>Goal</h4>
+                    <p>Make starting easy, daily check-ins take under 10 seconds, and progress feel rewarding.</p>
+                </div>
+                <div class="card">
+                    <h4>Challenges</h4>
+                    <p>Overwhelm from tracking too much, broken streaks, many habit types, a single designer and a short
+                        timeline.</p>
+                </div>
+                <div class="card">
+                    <h4>Success metrics</h4>
+                    <p>Onboarding in under 1 minute, check-in in 2 taps or fewer, new habit in under 30 seconds, 2 of 3
+                        testers finish every task unaided.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="discover">
+            <h2>Discover</h2>
+            <p class="lead">Understanding the people and the problem before drawing a single screen.</p>
+            <h3>Survey and interviews</h3>
+            <p>Five survey questions plus quick interviews with students and young professionals:</p>
+            <ol>
+                <li>Which habits do you want to build?</li>
+                <li>How long do you usually keep a habit before quitting?</li>
+                <li>What makes you quit?</li>
+                <li>Which habit apps have you used, and what did you dislike?</li>
+                <li>What would keep you going?</li>
+            </ol>
+            <div class="grid">
+                <div class="card">
+                    <h4>Respondents</h4>
+                    <p><span class="fill">30 participants*</span> aged 18–30</p>
+                </div>
+
+                <div class="card">
+                    <h4>Top habit wanted</h4>
+                    <p><span class="fill">40%*</span> prioritized regular exercise</p>
+                </div>
+
+                <div class="card">
+                    <h4>Main reason for quitting</h4>
+                    <p><span class="fill">43%*</span> cited loss of motivation</p>
+                </div>
+
+                <div class="card">
+                    <h4>What users said</h4>
+                    <p>Sample themes: busy routines, missed-day frustration, and a need for simple progress tracking.
+                    </p>
+                </div>
+            </div>
+            </div>
+            <h3>Secondary research</h3>
+            <ul>
+                <li>A 2009 study by Phillippa Lally and colleagues at University College London found a new habit took
+                    66 days on average to form, with a range from about 18 to 254 days. Apps must keep people motivated
+                    for weeks, not days.</li>
+                <li>The same study found missing a single day did not significantly harm habit formation, so streaks
+                    should be forgiving.</li>
+                <li>BJ Fogg’s Tiny Habits method says starting very small makes behaviour easier to keep, which led to
+                    Habitly’s limit of 3 starter habits.</li>
+            </ul>
+            <h3>Competitive analysis</h3>
+            <div class="scroll">
+                <table>
+                    <tr>
+                        <th>App</th>
+                        <th>What works</th>
+                        <th>What limits it</th>
+                    </tr>
+                    <tr>
+                        <td>Headspace</td>
+                        <td>Calm visuals, guided sessions, clear daily routine</td>
+                        <td>Centred on meditation and sleep; many features are paid</td>
+                    </tr>
+                    <tr>
+                        <td>Google Fit</td>
+                        <td>Simple activity goals, automatic movement tracking</td>
+                        <td>Mostly activity; little support for habits like water, reading or sleep schedule</td>
+                    </tr>
+                    <tr>
+                        <td>Habitica</td>
+                        <td>Very motivating game rewards</td>
+                        <td>Can feel cluttered and slow to learn; the game theme does not suit everyone</td>
+                    </tr>
+                </table>
+            </div>
+            <p><strong>Opportunity:</strong> a simple, focused app that covers different habit types, starts small, and
+                rewards consistency without a complicated game.</p>
+            <h3>Key insights</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4>Start small</h4>
+                    <p>Starting big feels overwhelming, so the app caps starter habits at 3.</p>
+                </div>
+                <div class="card">
+                    <h4>Remind gently</h4>
+                    <p>Forgetting breaks habits, so every habit has a reminder time.</p>
+                </div>
+                <div class="card">
+                    <h4>Show progress</h4>
+                    <p>Streaks, a weekly percentage and a calendar heatmap keep people going.</p>
+                </div>
+                <div class="card">
+                    <h4>Forgive misses</h4>
+                    <p>One missed day should not feel like failure, so the language stays encouraging.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="define">
+            <h2>Define</h2>
+            <h3>Problem statement</h3>
+            <blockquote>Young adults who want to build healthy daily habits lose motivation quickly because existing
+                apps feel overwhelming or complicated. How might we help them start small, stay consistent and see their
+                progress in a simple, rewarding way?</blockquote>
+            <h3>Persona: Aarav Sharma, 21, B.Tech student</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4>Goals</h4>
+                    <p>Drink more water, sleep on time, walk every morning, read 10 minutes a day.</p>
+                </div>
+                <div class="card">
+                    <h4>Frustrations</h4>
+                    <p>Forgets to log, gets discouraged when a streak breaks, finds most habit apps crowded.</p>
+                </div>
+                <div class="card">
+                    <h4>Needs</h4>
+                    <p>A quick check-in, gentle reminders, visible progress and small goals.</p>
+                </div>
+            </div>
+            <blockquote>“I want to build good habits, but I always give up when it starts to feel like work.”
+            </blockquote>
+            <h3>User journey</h3>
+            <div class="scroll">
+                <table>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Action</th>
+                        <th>Feeling</th>
+                        <th>Opportunity</th>
+                    </tr>
+                    <tr>
+                        <td>Discover</td>
+                        <td>Downloads Habitly</td>
+                        <td>Curious, skeptical</td>
+                        <td>Clear promise on the welcome screen</td>
+                    </tr>
+                    <tr>
+                        <td>Sign up</td>
+                        <td>Creates an account</td>
+                        <td>Impatient</td>
+                        <td>Short form, Google and Apple sign-in</td>
+                    </tr>
+                    <tr>
+                        <td>Choose habits</td>
+                        <td>Picks up to 3</td>
+                        <td>Relieved</td>
+                        <td>Habit cards and a selection counter</td>
+                    </tr>
+                    <tr>
+                        <td>Daily use</td>
+                        <td>Checks off habits</td>
+                        <td>Satisfied</td>
+                        <td>Progress ring, one-tap check-in</td>
+                    </tr>
+                    <tr>
+                        <td>Missed day</td>
+                        <td>Forgets a habit</td>
+                        <td>Guilty</td>
+                        <td>Encouraging message</td>
+                    </tr>
+                    <tr>
+                        <td>Progress</td>
+                        <td>Views streaks</td>
+                        <td>Proud</td>
+                        <td>Heatmap and weekly summary</td>
+                    </tr>
+                </table>
+            </div>
+            <h3>Feature priorities</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4>Must-have</h4>
+                    <p>Sign up and log in, starter habits, home checklist, add habit, streaks, progress screen.</p>
+                </div>
+                <div class="card">
+                    <h4>Nice-to-have</h4>
+                    <p>Habit detail calendar, edit or delete, profile settings, forgot password, social sign-in.</p>
+                </div>
+                <div class="card">
+                    <h4>Later</h4>
+                    <p>Friends, badges, widgets, wearable sync, light theme.</p>
+                </div>
+            </div>
+            <h3>User flows</h3>
+            <p><strong>Sign up and start</strong></p>
+            <div class="flow"><span>Welcome</span><em>→</em><span>Create account</span><em>→</em><span>Choose up to 3
+                    habits</span><em>→</em><span>Home</span></div>
+            <p><strong>Daily check-in</strong></p>
+            <div class="flow"><span>Home</span><em>→</em><span>Tap a habit</span><em>→</em><span>Ring
+                    updates</span><em>→</em><span>Habit detail</span></div>
+            <p><strong>Add a habit</strong></p>
+            <div class="flow">
+                <span>Add</span><em>→</em><span>Category</span><em>→</em><span>Name</span><em>→</em><span>Reminder</span><em>→</em><span>Frequency</span><em>→</em><span>Add
+                    Habit</span>
+
+        </section>
+
+        <section id="design">
+            <h2>Design</h2>
+            <p class="lead">Dark and energetic, so the lime green of progress stands out against a calm, focused
+                background.</p>
+            <h3>Colour</h3>
+            <div class="sw">
+                <div><i style="background:#0d0e0b"></i>
+                    <p>Near black<br>Focus, premium</p>
+                </div>
+                <div><i style="background:#b8f400"></i>
+                    <p>Lime<br>Growth, energy</p>
+                </div>
+                <div><i style="background:#f1f2ec"></i>
+                    <p>Off-white<br>Readable text</p>
+                </div>
+                <div><i style="background:#a5aa9a"></i>
+                    <p>Soft grey<br>Secondary text</p>
+                </div>
+            </div>
+
+            <h3>Typography and design system</h3>
+            <p>Bold italic headlines for energy and a clean sans-serif for body text. Colour styles, text styles and
+                components with variants are saved in Figma: primary and secondary buttons, input fields, habit cards,
+                checkbox, bottom navigation, progress ring and toggles.</p>
+
+            <h3>Final screens</h3>
+
+            <div class="shots">
+                <div class="shot">
+                    <img src="images/welcome.png" alt="Habitly welcome screen">
+                    <p>Welcome</p>
+                </div>
+
+                <div class="shot">
+                    <img src="images/signup.png" alt="Habitly sign-up screen">
+                    <p>Sign up</p>
+                </div>
+
+                <div class="shot">
+                    <img src="images/choose-habits.png" alt="Habitly choose habits screen">
+                    <p>Choose habits</p>
+                </div>
+
+                <div class="shot">
+                    <img src="images/home.png" alt="Habitly home dashboard">
+                    <p>Home</p>
+                </div>
+
+                <div class="shot">
+                    <img src="images/add-habit.png" alt="Habitly add habit screen">
+                    <p>Add habit</p>
+                </div>
+
+                <div class="shot">
+                    <img src="images/habit-detail.png" alt="Habitly habit detail screen">
+                    <p>Habit detail</p>
+                </div>
+
+                <div class="shot">
+                    <img src="images/progress.png" alt="Habitly progress screen">
+                    <p>Progress</p>
+                </div>
+
+                <div class="shot">
+                    <img src="images/profile.png" alt="Habitly profile screen">
+                    <p>Profile</p>
+                </div>
+            </div>
+
+
+            <h3>Decisions backed by research</h3>
+            <div class="scroll">
+                <table>
+                    <tr>
+                        <th>Screen</th>
+                        <th>Decision</th>
+                        <th>Why</th>
+                    </tr>
+                    <tr>
+                        <td>Welcome</td>
+                        <td>One promise, one button</td>
+                        <td>Gets users in without overwhelm</td>
+                    </tr>
+                    <tr>
+                        <td>Choose habits</td>
+                        <td>Cards with a “2 of 3 selected” counter</td>
+                        <td>Starting small prevents quitting</td>
+                    </tr>
+                    <tr>
+                        <td>Home</td>
+                        <td>Progress ring and one-tap checklist</td>
+                        <td>Daily use takes seconds</td>
+                    </tr>
+                    <tr>
+                        <td>Add habit</td>
+                        <td>Category chips, reminder, frequency</td>
+                        <td>Reminders fight forgetting</td>
+                    </tr>
+                    <tr>
+                        <td>Habit detail</td>
+                        <td>Streak, longest streak, calendar heatmap</td>
+                        <td>Visible progress motivates</td>
+                    </tr>
+                    <tr>
+                        <td>Progress</td>
+                        <td>Weekly percentage, per-habit bars</td>
+                        <td>A clear overview at a glance</td>
+                    </tr>
+                    <tr>
+                        <td>Profile</td>
+                        <td>Reminders, notifications, appearance</td>
+                        <td>Control and personalisation</td>
+                    </tr>
+                </table>
+            </div>
+            <h3>Accessibility</h3>
+            <ul>
+                <li>Lime on near-black gives strong contrast for buttons and key numbers.</li>
+                <li>Buttons carry text labels, not icons alone.</li>
+                <li>Small grey helper text was checked for size and brightness.</li>
+                <li>Tap targets in the bottom navigation are consistent.</li>
+            </ul>
+        </section>
+
+        <section id="test">
+            <h2>Prototype and testing</h2>
+            <p class="lead">Screens are linked in Figma so the app can be tapped through like a real product, with
+                smooth transitions and button feedback.</p>
+            <h3>Test plan</h3>
+            <p>Three participants, four tasks: create an account and choose two habits; mark Drink Water done; add “Read
+                10 pages” with a reminder; find the streak for one habit.</p>
+            <div class="scroll">
+
+                <table>
+                    <tr>
+                        <th>Problem observed</th>
+                        <th>Fix made</th>
+                    </tr>
+                    <tr>
+                        <td>Users could miss the login option when moving between sign-up and login.</td>
+                        <td>Made the Log in link more visible and added a dedicated login screen.</td>
+                    </tr>
+                    <tr>
+                        <td>Users could be unsure whether a habit was marked complete.</td>
+                        <td>Added a clear completion indicator and stronger visual feedback.</td>
+                    </tr>
+                </table>
+
+            </div>
+        </section>
+
+
+        <div class="grid">
+            <div class="card">
+                <h4>Task completion</h4>
+                <p><strong>3/3 participants</strong></p>
+                <p>Example: all participants completed the four assigned tasks.</p>
+            </div>
+
+            <div class="card">
+                <h4>Most difficult task</h4>
+                <p><strong>Finding habit streaks</strong></p>
+                <p>Example: improve the visibility of streak information.</p>
+            </div>
+
+            <div class="card">
+                <h4>Next improvement</h4>
+                <p><strong>Clearer progress feedback</strong></p>
+                <p>Make completion states and progress indicators easier to understand.</p>
+            </div>
+        </div>
+
+
+
+        <section id="results">
+            <h2>Results and learnings</h2>
+
+            <p class="lead">
+                Habitly brings onboarding, daily habit check-ins, and progress
+                tracking into one simple mobile experience.
+                The prototype is designed to help users start small and
+                build consistent routines.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>Research shapes design</h4>
+                    <p>
+                        A focused starter selection helps keep onboarding
+                        manageable and encourages users to begin with a few habits.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h4>Details matter</h4>
+                    <p>
+                        Clear completion states, consistent streak information,
+                        and visible feedback make daily check-ins easier to understand.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h4>Test with real people</h4>
+                    <p>
+                        Usability testing can reveal confusing navigation,
+                        unclear actions, and opportunities to improve the experience.
+                    </p>
+                </div>
+            </div>
+            <h3>Next steps</h3>
+            <p>Friends and sharing, badges, widgets, a light theme, smarter reminders and more accessibility work.</p>
+            <footer>References: Headspace, Google Fit and Habitica were studied for ideas only. Lally et al. (2009),
+                University College London. BJ Fogg, Tiny Habits. Designed by Rijit Ghosh.</footer>
+        </section>
+    </main>
+</body>
+
+</html>
